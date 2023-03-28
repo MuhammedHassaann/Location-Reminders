@@ -34,7 +34,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAnXyD6s8ivbcmaoWgyFczNJZlyBJ_P6XA" />
+            android:value="${MAPS_API_KEY}" />
 
         <activity android:name="com.udacity.project4.authentication.AuthenticationActivity"
             android:exported="true">
