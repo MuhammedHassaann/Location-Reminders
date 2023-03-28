@@ -3,6 +3,7 @@ package com.udacity.project4.locationreminders.reminderslist
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
@@ -12,12 +13,15 @@ import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
+import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import pub.devrel.easypermissions.AppSettingsDialog
+import pub.devrel.easypermissions.EasyPermissions
 
-class ReminderListFragment : BaseFragment() {
+class ReminderListFragment : BaseFragment(), EasyPermissions.PermissionCallbacks {
     //use Koin to retrieve the ViewModel instance
     override val _viewModel: RemindersListViewModel by viewModel()
     private lateinit var binding: FragmentRemindersBinding
@@ -71,6 +75,7 @@ class ReminderListFragment : BaseFragment() {
 
 //        setup the recycler view using the extension function
         binding.reminderssRecyclerView.setup(adapter)
+        requestPermission()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -109,6 +114,54 @@ class ReminderListFragment : BaseFragment() {
             }
             .setIcon(R.drawable.logout)
             .show()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this)
+    }
+
+    private fun requestPermission(){
+        if (Constants.RUNNING_TIRAMISU_OR_LATER){
+            if (!hasNotificationPermission()){
+                requestNotificationPermission()
+            }
+        }
+    }
+
+    private fun hasNotificationPermission() =
+        EasyPermissions.hasPermissions(
+            requireContext(),
+            Constants.NOTIFICATION_PERMISSION,
+        )
+
+    private fun requestNotificationPermission(){
+        EasyPermissions.requestPermissions(
+            this,
+            "You need to grant notification permission in order to get notified when you reach your destination.",
+            Constants.NOTIFICATION_REQUEST,
+            Constants.NOTIFICATION_PERMISSION
+        )
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        Log.i("Notification", "onPermissionsGranted: Notification ")
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+        when(requestCode){
+            Constants.NOTIFICATION_REQUEST-> {
+                if (EasyPermissions.somePermissionPermanentlyDenied(this,perms)){
+                    AppSettingsDialog.Builder(this).build().show()
+                }else{
+                    requestNotificationPermission()
+                }
+            }
+        }
     }
 
 }
