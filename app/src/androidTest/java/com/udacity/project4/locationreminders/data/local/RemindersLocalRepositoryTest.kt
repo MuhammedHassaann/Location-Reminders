@@ -106,6 +106,7 @@ class RemindersLocalRepositoryTest {
         assertThat(numOfRetrievedReminders, `is`(reminders.size))
     }
 
+
     @Test
     // Verify that when the database is empty, an empty list is returned when retrieving reminders
     fun getRemindersAndGetRemindersWhenDatabaseIsEmpty_returnEmptyList() = mainCoroutineRule.runBlockingTest {
@@ -140,7 +141,20 @@ class RemindersLocalRepositoryTest {
     // Test saving a reminder to the database,
     // attempting to retrieve it with the wrong ID,
     // and verifying that retrieved data has an error with the message "Reminder not found!"
-    fun saveReminder_getReminderById_returnError() = mainCoroutineRule.runBlockingTest {
+    fun saveReminder_getReminderByWrongId_returnError() = mainCoroutineRule.runBlockingTest {
+        // Arrange - save a reminder to the database
+        remindersLocalRepository.saveReminder(
+            reminder = reminders[0]
+        )
+
+        // Act - retrieve a reminder with a wrong ID from the database
+        val retrievedReminder = remindersLocalRepository.getReminder("Wrong Id")  as Result.Error
+
+        // Assert - the retrieved reminder should be null
+        assertThat(retrievedReminder.message, `is`("Reminder not found!"))
+    }
+
+    fun saveReminder_getReminderByCorrectId_returnError() = mainCoroutineRule.runBlockingTest {
         // Arrange - save a reminder to the database
         remindersLocalRepository.saveReminder(
             reminder = reminders[0]

@@ -192,20 +192,21 @@ class RemindersListViewModelTest {
     }
 
     @Test
-    fun `checking the error message in case of errors and list is empty`()= runBlockingTest {
-        // Arrange: set the fake data source to return an error, load reminders from the view model
-        fakeDataSource.setError(true)
+    fun `checking if the list is empty should return empty list`()= runBlockingTest {
+        // Arrange: load reminders from the view model
         remindersListViewModel.loadReminders()
 
-        // Act: get the error message from the view model
-        val errorMessage = remindersListViewModel.showSnackBar.getOrAwaitValue()
+        // Act: get the reminders and the number of reminders
+        val reminders = remindersListViewModel.remindersList.getOrAwaitValue()
+        val numOfReminders = remindersListViewModel.remindersList.getOrAwaitValue().size
 
-        // Assert: verify that the error message is correct
-        assertThat(errorMessage, `is`("Reminders not found"))
+        // Assert: verify that there are no reminders
+        assertThat(reminders, `is`(emptyList()))
+        assertThat(numOfReminders, `is`(0))
     }
 
     @Test
-    fun `checking the error message in case of errors and list is not empty`()= runBlockingTest {
+    fun `checking the error message in case of errors`()= runBlockingTest {
         // Arrange: set the fake data source to return an error, save a reminder to the fake data source,
         // load reminders from the view model
         fakeDataSource.setError(true)
