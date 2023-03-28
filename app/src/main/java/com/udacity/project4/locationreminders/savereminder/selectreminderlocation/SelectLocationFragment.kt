@@ -433,6 +433,20 @@ class SelectLocationFragment : BaseFragment(),
         }
     }
 
+    /**
+     * Theses methods are overridden to prevent app from crashing
+     * on lower APIs 30 or Lower
+     */
+    override fun onProviderEnabled(provider: String) {
+        //super.onProviderEnabled(provider)
+    }
 
+    override fun onProviderDisabled(provider: String) {
+        //super.onProviderDisabled(provider)
+    }
+
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+        //super.onStatusChanged(provider, status, extras)
+    }
 
 }
