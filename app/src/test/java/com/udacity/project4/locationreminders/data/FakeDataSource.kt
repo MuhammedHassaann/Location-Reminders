@@ -20,20 +20,16 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
     override suspend fun getReminders(): Result<List<ReminderDTO>> {
         //in case we want to test error handling
         if (thereIsAnError){
-            return if (reminders.isEmpty()){
-                Result.Error("Reminders not found") //returns a Result.Error with an error message if the list is empty.
-            }else{
-                Result.Error("Unexpected Error!!")//returns a Result.Error with an error message
-            }
+            return Result.Error("Unexpected Error!!")//returns a Result.Error with an error message
         }
 
         //in case we want to test the result as success
-        if (reminders.isEmpty()){ // in case we have an empty list we want the result to be success
-            return Result.Success(emptyList()) //so we return an empty list
+        return if (reminders.isEmpty()){ // in case we have an empty list we want the result to be success
+            Result.Success(emptyList()) //so we return an empty list
+        }else {
+            //returns a Result.Success containing a copy of the reminders list
+            Result.Success(reminders)
         }
-
-        //returns a Result.Success containing a copy of the reminders list
-        return Result.Success(reminders as List<ReminderDTO>)
     }
 
     // Adds the provided reminder object to the reminders list.
@@ -47,12 +43,12 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
     override suspend fun getReminder(id: String): Result<ReminderDTO> {
         //in case we want to test error handling
         if (thereIsAnError){
-            return Result.Error("Reminder not found")
+            return Result.Error("Unexpected Error!!")
         }
 
         reminders.let { reminders ->
             val reminder = reminders.find { reminderDTO ->
-                reminderDTO.id == id
+                reminderDTO.id == id // Search the list of fake reminders for the given ID
             }
             return reminder?.let { reminderDTO ->
                 Result.Success(reminderDTO) // returns Result.Success if the reminder is found.
