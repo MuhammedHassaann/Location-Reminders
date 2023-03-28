@@ -218,19 +218,6 @@ class SelectLocationFragment : BaseFragment(),
             Constants.COARSE_LOCATION_PERMISSION
         )
 
-
-/*    private fun requestBackgroundLocationPermission(){
-        if (Constants.RUNNING_Q_OR_LATER) {
-            EasyPermissions.requestPermissions(
-                this,
-                getString(R.string.permission_denied_explanation),
-                Constants.BACKGROUND_LOCATION_REQUEST,
-                Constants.BACKGROUND_LOCATION_PERMISSION
-            )
-        }
-    }*/
-
-
     private fun requestForegroundLocationPermission(){
         EasyPermissions.requestPermissions(
             this,
@@ -240,15 +227,6 @@ class SelectLocationFragment : BaseFragment(),
             Constants.COARSE_LOCATION_PERMISSION
         )
     }
-
-/*    private fun getBackgroundPermission(){
-        if (Constants.RUNNING_Q_OR_LATER){
-            if (!hasBackgroundLocationPermission()){
-                requestBackgroundLocationPermission()
-            }
-        }
-    }*/
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -268,13 +246,6 @@ class SelectLocationFragment : BaseFragment(),
                     requestForegroundLocationPermission()
                 }
             }
-/*            Constants.BACKGROUND_LOCATION_REQUEST -> {
-                if (EasyPermissions.somePermissionPermanentlyDenied(this,perms)){
-                    SettingsDialog.Builder(requireContext()).build().show()
-                }else{
-                    requestBackgroundLocationPermission()
-                }
-            }*/
         }
     }
 
